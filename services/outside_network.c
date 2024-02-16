@@ -1769,8 +1769,8 @@ outside_network_create(struct comm_base *base, size_t bufsize,
 			outside_network_delete(outnet);
 			return NULL;
 		}
-		pc->cp = comm_point_create_udp(outnet->base, -1, 
-			outnet->udp_buff, 0, outnet_udp_cb, outnet, NULL);
+		pc->cp = comm_point_create_udp(outnet->base, -1,
+			outnet->udp_buff, 0, outnet_udp_cb, outnet, NULL, listen_type_udp);
 		if(!pc->cp) {
 			log_err("malloc failed");
 			free(pc);
@@ -3661,7 +3661,7 @@ outnet_comm_point_for_udp(struct outside_network* outnet,
 		return NULL;
 	}
 	cp = comm_point_create_udp(outnet->base, fd, outnet->udp_buff, 0,
-		cb, cb_arg, NULL);
+		cb, cb_arg, NULL, listen_type_udp);
 	if(!cp) {
 		log_err("malloc failure");
 		close(fd);
@@ -3874,7 +3874,7 @@ if_get_mem(struct port_if* pif)
 #endif
 		sizeof(struct port_comm*)*pif->maxout;
 	for(i=0; i<pif->inuse; i++)
-		s += sizeof(*pif->out[i]) + 
+		s += sizeof(*pif->out[i]) +
 			comm_point_get_mem(pif->out[i]->cp);
 	return s;
 }

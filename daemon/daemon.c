@@ -571,6 +571,7 @@ daemon_create_workers(struct daemon* daemon)
 			(int)daemon->num_ports);
 		daemon->num = (int)daemon->num_ports;
 	}
+	// workers hold pointer to the first element of the array (the first worker pointer)
 	daemon->workers = (struct worker**)calloc((size_t)daemon->num, 
 		sizeof(struct worker*));
 	if(!daemon->workers)
@@ -822,6 +823,7 @@ daemon_fork(struct daemon* daemon)
 	 */
 #if !(defined(HAVE_EV_LOOP) || defined(HAVE_EV_DEFAULT_LOOP))
 	/* libevent has the last inited base get signals (or any base) */
+	// take ports[0] -> listen_port list with opend sockets
 	if(!worker_init(daemon->workers[0], daemon->cfg, daemon->ports[0], 1))
 		fatal_exit("Could not initialize main thread");
 #endif

@@ -108,7 +108,9 @@ enum listen_type {
 	/** HTTP(2) over TLS over TCP */
 	listen_type_http,
 	/** DNS over QUIC */
-	listen_type_doq
+	listen_type_doq,
+	/** COAP over CoAP **/
+	listen_type_coap
 };
 
 /*

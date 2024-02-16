@@ -1283,7 +1283,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 	int http2_nodelay, int use_systemd, int dnscrypt_port, int dscp,
 	int quic_port, int http_notls_downstream, int sock_queue_timeout)
 {
-	int s, noip6=0;
+	int s, s_coap, noip6=0;
 	int is_ssl = if_is_ssl(ifname, port, ssl_port, tls_additional_port);
 	int is_https = if_is_https(ifname, port, https_port);
 	int is_dnscrypt = if_is_dnscrypt(ifname, port, dnscrypt_port);
@@ -1297,6 +1297,9 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 	int nodelay = is_https?http2_nodelay:is_ssl; 
 	struct unbound_socket* ub_sock;
 	const char* add = NULL;
+
+	struct unbound_socket* ub_sock_coap;
+	int coap_port = 5683;
 
 	if(!do_udp && !do_tcp)
 		return 0;
@@ -1357,8 +1360,15 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 	} else if(do_udp) {
 		enum listen_type udp_port_type;
 		ub_sock = calloc(1, sizeof(struct unbound_socket));
+
+		ub_sock_coap = calloc(1, sizeof(struct unbound_socket));
+
 		if(!ub_sock)
 			return 0;
+
+		if(!ub_sock_coap)
+			return 0;
+
 		if(is_dnscrypt) {
 			udp_port_type = listen_type_udp_dnscrypt;
 			add = "dnscrypt";
@@ -1391,6 +1401,20 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 			}
 			return 0;
 		}
+
+		/* regular udp socket (for coap) */
+		if((s_coap = make_sock_port(SOCK_DGRAM, ifname, coap_port, hints, 1,
+			&noip6, rcv, snd, reuseport, transparent,
+			tcp_mss, nodelay, freebind, use_systemd, dscp, ub_sock_coap, NULL)) == -1) {
+			free(ub_sock_coap->addr);
+			free(ub_sock_coap);
+			if(noip6) {
+				log_warn("IPv6 protocol not available");
+				return 1;
+			}
+			printf("port_create_if call make_sock_port udp");
+			return 0;
+		}
 		if(udp_port_type == listen_type_doq) {
 			if(!set_recvpktinfo(s, hints->ai_family)) {
 				sock_close(s);
@@ -1413,6 +1437,14 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 			sock_close(s);
 			free(ub_sock->addr);
 			free(ub_sock);
+			return 0;
+		}
+
+		if(!port_insert(list, s_coap, listen_type_coap,
+			is_pp2, ub_sock_coap)) {
+			sock_close(s);
+			free(ub_sock_coap->addr);
+			free(ub_sock_coap);
 			return 0;
 		}
 	}
@@ -1542,7 +1574,11 @@ listen_create(struct comm_base* base, struct listen_port* ports,
 		   ports->ftype == listen_type_udp_dnscrypt) {
 			cp = comm_point_create_udp(base, ports->fd,
 				front->udp_buff, ports->pp2_enabled, cb,
-				cb_arg, ports->socket);
+				cb_arg, ports->socket, ports->ftype);
+		} else if(ports->ftype == listen_type_coap) {
+			cp = comm_point_create_udp(base, ports->fd,
+				front->udp_buff, ports->pp2_enabled, cb,
+				cb_arg, ports->socket, ports->ftype);
 		} else if(ports->ftype == listen_type_doq) {
 #ifndef HAVE_NGTCP2
 			log_warn("Unbound is not compiled with "
