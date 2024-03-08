@@ -55,6 +55,7 @@
 #include "dnscrypt/dnscrypt.h"
 #include "services/listen_dnsport.h"
 #include "util/random.h"
+#include <coap3/coap.h>
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -1192,7 +1193,7 @@ comm_point_udp_callback(int fd, short event, void* arg)
 void
 comm_point_oscore_callback(int fd, short event, void* arg)
 {
-	printf("[netevent.c // comm_point_udp_callback()] Called callback function for udp requests\n");
+	printf("[netevent.c // comm_point_oscore_callback()] Called callback function for oscore requests\n");
 	struct comm_reply rep;
 	ssize_t rcv;
 	int i;
@@ -5828,15 +5829,14 @@ comm_point_create_udp(struct comm_base *base, int fd, sldns_buffer* buffer,
 	evbits = UB_EV_READ | UB_EV_PERSIST;
 	/* ub_event stuff */
 	// printf("[netevent.c // comm_point_create_udp] Create Event for UDP Com Point\n");
-
 	if (port_type == listen_type_coap) {
 		printf("[netevent.c // comm_point_create_udp] Create Event for UDP/COAP Com Point\n");
 		c->ev->ev = ub_event_new(base->eb->base, c->fd, evbits,
-			comm_point_udp_callback, c);
+			comm_point_oscore_callback, c);
 	} else {
 		printf("[netevent.c // comm_point_create_udp] Create Event for UDP(normal) Com Point\n");
 		c->ev->ev = ub_event_new(base->eb->base, c->fd, evbits,
-			comm_point_udp_callback, c);
+		comm_point_udp_callback, c);
 	}
 
 	if(c->ev->ev == NULL) {
