@@ -68,6 +68,7 @@
 #ifdef HAVE_NGTCP2
 #include <ngtcp2/ngtcp2.h>
 #endif
+#include <coap3/coap.h>
 
 struct sldns_buffer;
 struct comm_point;
@@ -445,6 +446,8 @@ struct comm_point {
 	comm_point_callback_type* callback;
 	/** argument to pass to callback. */
 	void *cb_arg;
+
+    coap_context_t* context;
 };
 
 /**
@@ -562,7 +565,8 @@ struct ub_event_base* comm_base_internal(struct comm_base* b);
  */
 struct comm_point* comm_point_create_udp(struct comm_base* base,
 	int fd, struct sldns_buffer* buffer, int pp2_enabled,
-	comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket, enum listen_type);
+	comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket,
+    enum listen_type, coap_context_t* context);
 
 /**
  * Create an UDP with ancillary data comm point. Calls malloc.
