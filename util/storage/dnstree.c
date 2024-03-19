@@ -227,6 +227,18 @@ struct addr_tree_node* addr_tree_lookup(rbtree_type* tree,
         struct addr_tree_node* result;
         struct addr_tree_node key;
         key.node.key = &key;
+        /**
+        printf("Size of addr: %d\n", addrlen);
+        printf("Size of key.addr: %lu\n", sizeof(key.addr));
+        char addr_str[INET6_ADDRSTRLEN]; // Groß genug für IPv6
+        struct sockaddr_in *addr_in = (struct sockaddr_in *)addr;
+        if (inet_ntop(AF_INET, &addr_in->sin_addr, addr_str, sizeof(addr_str))) {
+            printf("IPv4 Address: %s\n", addr_str);
+        }
+        if(addrlen > sizeof(key.addr)) {
+            printf("not good\n");
+        }
+        **/
         memcpy(&key.addr, addr, addrlen);
         key.addrlen = addrlen;
         key.net = (addr_is_ip6(addr, addrlen)?128:32);
