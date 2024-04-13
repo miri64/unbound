@@ -46,6 +46,7 @@
 #include "util/rbtree.h"
 #include "util/locks.h"
 #include "daemon/acl_list.h"
+#include <coap3/coap_resource.h>
 #ifdef HAVE_NGHTTP2_NGHTTP2_H
 #include <nghttp2/nghttp2.h>
 #endif
@@ -88,6 +89,14 @@ struct listen_list {
 	struct comm_point* com;
 };
 
+
+enum CoAPSecurityMode{
+    CoAPSecurityMode_Unencrypted,
+    CoAPSecurityMode_DTLS,
+    CoAPSecurityMode_OSCORE,
+    CoAPSecuirtyMode_COAP_NOT_USED
+};
+
 /**
  * type of ports
  */
@@ -113,6 +122,7 @@ enum listen_type {
 	/** COAP over UDP **/
 	listen_type_coap
 };
+
 
 /*
  * socket properties (just like NSD nsd_socket structure definition)
@@ -288,7 +298,7 @@ void listen_start_accept(struct listen_dnsport* listen);
 int create_udp_sock(int family, int socktype, struct sockaddr* addr, 
 	socklen_t addrlen, int v6only, int* inuse, int* noproto, int rcv,
 	int snd, int listen, int* reuseport, int transparent, int freebind, int use_systemd, int dscp,
-    coap_context_t** context, enum listen_type ftype);
+    coap_context_t* context, enum listen_type ftype, enum CoAPSecurityMode coap_sec_mode);
 
 /**
  * Create and bind TCP listening socket
