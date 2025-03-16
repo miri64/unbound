@@ -1569,7 +1569,7 @@ if test x_$withval = x_yes -o x_$withval != x_no; then
 		fi
 		AC_MSG_RESULT(found in $dir)
 		AC_DEFINE([HAVE_COAP], [1], [Define this to use DNS over CoAP.])
-		LIBS="$LIBS -lcoap-3-gnutls"  # TODO: test and replace with coap-3-openssl
+		LIBS="$LIBS -lcoap-3-openssl"
                 break;
             fi
     done
