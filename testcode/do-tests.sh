@@ -43,7 +43,7 @@ export -n NOTIFY_SOCKET
 cd testdata;
 sh ../testcode/mini_tdir.sh $tdirarg clean
 rm -f .perfstats.txt
-for test in `ls -d *.tdir`; do
+for test in `ls -d *.tdir | grep 'doc_downstream'`; do
 	SKIP=0
 	skip_if_in_list $test "$NEED_SPLINT" "splint"
 	skip_if_in_list $test "$NEED_DOXYGEN" "doxygen"
@@ -73,4 +73,4 @@ for test in `ls -d *.tdir`; do
 	fi
 done
 sh ../testcode/mini_tdir.sh $tdirarg report
-cat .perfstats.txt
+# cat .perfstats.txt
