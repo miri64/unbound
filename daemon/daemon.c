@@ -1074,4 +1074,8 @@ void daemon_apply_cfg(struct daemon* daemon, struct config_file* cfg)
 	if((daemon->env->infra_cache = infra_adjust(daemon->env->infra_cache,
 		cfg))==0)
 		fatal_exit("malloc failure updating config settings");
+#ifdef HAVE_COAP
+	/* TODO: make this dependent on config */
+	coap_set_log_level(COAP_LOG_DEBUG);
+#endif	/* HAVE_COAP */
 }
