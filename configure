@@ -921,6 +921,7 @@ enable_tfo_server
 with_libevent
 with_libexpat
 with_libhiredis
+with_libcoap
 with_libnghttp2
 with_libngtcp2
 enable_static_exe
@@ -1711,6 +1712,7 @@ Optional Packages:
                           outgoing port ranges.
   --with-libexpat=path    specify explicit path for libexpat.
   --with-libhiredis=path  specify explicit path for libhiredis.
+  --with-libcoap=path     specify explicit path for libcoap.
   --with-libnghttp2=path  specify explicit path for libnghttp2.
   --with-libngtcp2=path   specify explicit path for libngtcp2, for QUIC.
   --with-dnstap-socket-path=pathname
@@ -22172,6 +22174,64 @@ else $as_nop
   ac_have_decl=0
 fi
 printf "%s\n" "#define HAVE_DECL_REDISCONNECT $ac_have_decl" >>confdefs.h
+
+fi
+
+# coap (Constrained Application (CoAP) protocol implementation in C for DNS over CoAP)
+
+# Check whether --with-libcoap was given.
+if test ${with_libcoap+y}
+then :
+  withval=$with_libcoap;
+else $as_nop
+   withval="no"
+fi
+
+found_libcoap="no"
+if test x_$withval = x_yes -o x_$withval != x_no; then
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libcoap" >&5
+printf %s "checking for libcoap... " >&6; }
+   if test x_$withval = x_ -o x_$withval = x_yes; then
+            withval="/usr/local /opt/local /usr/lib /usr/pkg /usr/sfw /usr"
+   fi
+   for dir in $withval ; do
+            if test -f "$dir/include/coap3/coap.h"; then
+		found_libcoap="yes"
+				if test "$dir" != "/usr"; then
+                    CPPFLAGS="$CPPFLAGS -I$dir/include"
+		    LDFLAGS="$LDFLAGS -L$dir/lib"
+		fi
+		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: found in $dir" >&5
+printf "%s\n" "found in $dir" >&6; }
+
+printf "%s\n" "#define HAVE_COAP 1" >>confdefs.h
+
+		LIBS="$LIBS -lcoap-3-openssl"
+                break;
+            fi
+    done
+    if test x_$found_libcoap != x_yes; then
+	as_fn_error $? "Could not find libcoap, coap.h" "$LINENO" 5
+    fi
+    ac_fn_c_check_header_compile "$LINENO" "coap3/coap.h" "ac_cv_header_coap3_coap_h" "$ac_includes_default
+"
+if test "x$ac_cv_header_coap3_coap_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_COAP3_COAP_H 1" >>confdefs.h
+
+fi
+
+    ac_fn_check_decl "$LINENO" "coap_io_process" "ac_cv_have_decl_coap_io_process" "$ac_includes_default
+    #include <coap3/coap.h>
+
+" "$ac_c_undeclared_builtin_options" "CFLAGS"
+if test "x$ac_cv_have_decl_coap_io_process" = xyes
+then :
+  ac_have_decl=1
+else $as_nop
+  ac_have_decl=0
+fi
+printf "%s\n" "#define HAVE_DECL_COAP_IO_PROCESS $ac_have_decl" >>confdefs.h
 
 fi
 
