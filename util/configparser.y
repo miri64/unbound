@@ -1248,7 +1248,7 @@ server_coap_port: VAR_COAP_PORT STRING_ARG
 	};
 server_coaps_port: VAR_COAPS_PORT STRING_ARG
 	{
-		OUTYY(("P(server_coap_port:%s)\n", $2));
+		OUTYY(("P(server_coaps_port:%s)\n", $2));
 #ifndef HAVE_COAP
 		log_warn("%s:%d: Unbound is not compiled with "
 			"libcoap. This is required to use DNS "
