@@ -138,6 +138,7 @@ config_create(void)
 	cfg->quic_port = UNBOUND_DNS_OVER_QUIC_PORT;
 	cfg->quic_size = 8*1024*1024;
 	cfg->coap_port = UNBOUND_DNS_OVER_COAP_PORT;
+	if(!(cfg->coap_resource = strdup("/"))) goto error_exit;
 	cfg->coaps_port = UNBOUND_DNS_OVER_COAPS_PORT;
 	cfg->coaps_psk = NULL;
 	cfg->coaps_psk_id = NULL;
