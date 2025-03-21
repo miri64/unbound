@@ -275,6 +275,10 @@ coap-port{COLON}		{ YDVAR(1, VAR_COAP_PORT) }
 coaps-port{COLON}		{ YDVAR(1, VAR_COAPS_PORT) }
 coaps-psk{COLON}		{ YDVAR(1, VAR_COAPS_PSK) }
 coaps-psk-id{COLON}		{ YDVAR(1, VAR_COAPS_PSK_ID) }
+oscore-seq-file{COLON}	{ YDVAR(1, VAR_OSCORE_SEQ_FILE) }
+oscore-psk-hex{COLON}	{ YDVAR(1, VAR_OSCORE_PSK_HEX) }
+oscore-sender-id-ascii{COLON}	{ YDVAR(1, VAR_OSCORE_SENDER_ID_ASCII) }
+oscore-recipient-id-ascii{COLON}	{ YDVAR(1, VAR_OSCORE_RECIPIENT_ID_ASCII) }
 use-systemd{COLON}		{ YDVAR(1, VAR_USE_SYSTEMD) }
 do-daemonize{COLON}		{ YDVAR(1, VAR_DO_DAEMONIZE) }
 interface{COLON}		{ YDVAR(1, VAR_INTERFACE) }

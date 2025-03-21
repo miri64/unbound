@@ -177,6 +177,14 @@ struct config_file {
 	char *coaps_psk;
 	/** Identity sent for CoAPS pre-shared key */
 	char *coaps_psk_id;
+	/** OSCORE sequence storage file */
+	char *oscore_seq_file;
+	/** OSCORE pre-shared key (in hex) */
+	char *oscore_psk_hex;
+	/** OSCORE Sender-ID (in ASCII) */
+	char *oscore_sender_id_ascii;
+	/** OSCORE Recipient-ID (in ASCII) */
+	char *oscore_recipient_id_ascii;
 
 	/** outgoing port range number of ports (per thread) */
 	int outgoing_num_ports;

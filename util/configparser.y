@@ -205,6 +205,8 @@ extern struct config_parser_state* cfg_parser;
 %token VAR_INTERFACE_TAG_ACTION VAR_INTERFACE_TAG_DATA
 %token VAR_QUIC_PORT VAR_QUIC_SIZE
 %token VAR_COAP_PORT VAR_COAPS_PORT VAR_COAPS_PSK VAR_COAPS_PSK_ID
+%token VAR_OSCORE_SEQ_FILE VAR_OSCORE_PSK_HEX
+%token VAR_OSCORE_SENDER_ID_ASCII VAR_OSCORE_RECIPIENT_ID_ASCII
 %token VAR_PROXY_PROTOCOL_PORT VAR_STATISTICS_INHIBIT_ZERO
 %token VAR_HARDEN_UNKNOWN_ADDITIONAL VAR_DISABLE_EDNS_DO VAR_CACHEDB_NO_STORE
 %token VAR_LOG_DESTADDR VAR_CACHEDB_CHECK_WHEN_SERVE_EXPIRED
@@ -346,6 +348,8 @@ content_server: server_num_threads | server_verbosity | server_port |
 	server_tcp_reuse_timeout | server_tcp_auth_query_timeout |
 	server_quic_port | server_quic_size |
 	server_coap_port | server_coaps_port | server_coaps_psk | server_coaps_psk_id |
+	server_oscore_seq_file | server_oscore_psk_hex |
+	server_oscore_sender_id_ascii | server_oscore_recipient_id_ascii |
 	server_interface_automatic_ports | server_ede |
 	server_proxy_protocol_port | server_statistics_inhibit_zero |
 	server_harden_unknown_additional | server_disable_edns_do |
@@ -1275,6 +1279,30 @@ server_coaps_psk_id: VAR_COAPS_PSK_ID STRING_ARG
 		OUTYY(("P(server_coaps_psk_id:%s)\n", $2));
 		free(cfg_parser->cfg->coaps_psk_id);
 		cfg_parser->cfg->coaps_psk_id = $2;
+	};
+server_oscore_seq_file: VAR_OSCORE_SEQ_FILE STRING_ARG
+	{
+		OUTYY(("P(server_oscore_seq_file:%s)\n", $2));
+		free(cfg_parser->cfg->oscore_seq_file);
+		cfg_parser->cfg->oscore_seq_file = $2;
+	};
+server_oscore_psk_hex: VAR_OSCORE_PSK_HEX STRING_ARG
+	{
+		OUTYY(("P(server_oscore_psk_hex:%s)\n", $2));
+		free(cfg_parser->cfg->oscore_psk_hex);
+		cfg_parser->cfg->oscore_psk_hex = $2;
+	};
+server_oscore_sender_id_ascii: VAR_OSCORE_SENDER_ID_ASCII STRING_ARG
+	{
+		OUTYY(("P(server_oscore_sender_id_ascii:%s)\n", $2));
+		free(cfg_parser->cfg->oscore_sender_id_ascii);
+		cfg_parser->cfg->oscore_sender_id_ascii = $2;
+	};
+server_oscore_recipient_id_ascii: VAR_OSCORE_RECIPIENT_ID_ASCII STRING_ARG
+	{
+		OUTYY(("P(server_oscore_recipient_id_ascii:%s)\n", $2));
+		free(cfg_parser->cfg->oscore_recipient_id_ascii);
+		cfg_parser->cfg->oscore_recipient_id_ascii = $2;
 	};
 server_use_systemd: VAR_USE_SYSTEMD STRING_ARG
 	{
